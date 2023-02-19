@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro'
+
+// const response = await fetch('http://localhost:3000/api/generate')
+// const output = await response.json()
+---
+
+<Layout title="AI">
+  <main>
+    <h1>AIAI</h1>
+    <input type="text" id="input">
+    <button>Submit</button>
+    <p>Here's some AI-generated text:</p>
+    <!-- <pre>{ JSON.stringify(output, null, 2) }</pre> -->
+    <pre id="result">...</pre>
+  </main>
+</Layout>
+
+<style>
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+</style>
+
+<script>
+  const button = document.querySelector('button')
+
+  // const inputString = input!.text
+  let story = ''
+
+  console.log(button)
+  button!.addEventListener('click', async () => {
+    const input = document.getElementById('input') as HTMLInputElement
+    const inputValue = input.value
+    console.log(inputValue)
+  
+    try {
+      const response = await fetch(`http://localhost:3000/api/generate?input=${story + inputValue}`)
+      const output = await response.json()
+      console.log(output)
+      const result = document.getElementById('result') as HTMLParagraphElement
+      result.innerHTML += '\n\n' + inputValue + output.choices[0].text
+      input.value = ''
+      story += output.choices[0].text
+    } catch (error) {
+      console.log('error')
+    }
+    
+  })
+</script>
