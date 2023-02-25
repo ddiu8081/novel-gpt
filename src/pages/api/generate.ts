@@ -7,7 +7,6 @@ const apiKey = import.meta.env.OPENAI_API_KEY
 const configuration = new Configuration({
   apiKey,
 })
-const openai = new OpenAIApi(configuration)
 
 const encoder = new TextEncoder()
 
@@ -17,8 +16,7 @@ export const get: APIRoute = async (context) => {
   const decoder = new TextDecoder()
 
   if (!text) {
-    // throw new Error('No input text')
-    return
+    return new Response('No input text')
   }
 
   // const completion = await openai.createCompletion({
