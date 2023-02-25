@@ -1,27 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro'
-
-// const response = await fetch('http://localhost:3000/api/generate')
-// const output = await response.json()
 ---
 
 <Layout title="AI">
   <main>
-    <h1>AI Write</h1>
-    <input type="text" id="input">
-    <button>Submit</button>
-    <p>Here's some AI-generated text:</p>
-    <!-- <pre>{ JSON.stringify(output, null, 2) }</pre> -->
-    <pre id="result">...</pre>
+    <h1 text-2xl font-bold text-slate>AI Write</h1>
+    <input
+      type="text" id="input"
+      w-full my-4 px-3 py-2
+      text="xl slate"
+      border="~ white/20" bg="white/5" ring-0
+      focus="ring-0 outline-none"
+    />
+    <button border px-4 py-2 border-slate>Submit</button>
+    <!-- <p>Here's some AI-generated text:</p> -->
+    <pre id="result" py-4 text-slate></pre>
   </main>
 </Layout>
 
 <style>
-main {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
 pre {
   word-break: break-all;
   white-space: pre-wrap;
