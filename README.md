@@ -1,3 +1,3 @@
-# StoryGPT
+# NovelGPT
 
-> *Work in progress* StoryGPT is a Story completion tool based on OpenAI API.
+> *Work in progress* NovelGPT is a novel completion & image generation tool based on OpenAI API.
