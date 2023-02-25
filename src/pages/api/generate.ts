@@ -74,7 +74,7 @@ export const get: APIRoute = async (context) => {
 }
 
 const generatePrompt = (text: string) => {
-  return `Continuing a novel, in Chinese Simplified, 1 paragraph only:
+  return `Continuing a novel, 1 paragraph only:
 
   ${ text }`
 }
