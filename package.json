@@ -1,18 +1,18 @@
 {
-	"name": "reportify",
-	"type": "module",
-	"version": "0.0.1",
-	"scripts": {
-		"dev": "astro dev",
-		"start": "astro dev",
-		"build": "astro build",
-		"preview": "astro preview",
-		"astro": "astro"
-	},
-	"dependencies": {
-		"@astrojs/vercel": "^3.1.2",
-		"astro": "^2.0.14",
-		"eventsource-parser": "^0.1.0",
-		"openai": "^3.1.0"
-	}
+  "name": "reportify",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^3.1.3",
+    "astro": "^2.0.15",
+    "eventsource-parser": "^0.1.0",
+    "openai": "^3.1.0"
+  }
 }
