@@ -1,78 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import Header from '../components/Header.astro'
+import NovelGenerator from '../components/NovelGenerator'
 ---
 
 <Layout title="AI">
   <main>
-    <h1 text-2xl font-bold text-slate>AI Write</h1>
-    <input
-      type="text" id="input"
-      w-full my-4 px-3 py-2
-      text="xl slate"
-      border="~ white/20" bg="white/5" ring-0
-      focus="ring-0 outline-none"
-    />
-    <button border px-4 py-2 border-slate>Submit</button>
-    <!-- <p>Here's some AI-generated text:</p> -->
-    <pre id="result" py-4 text-slate></pre>
+    <Header />
+    <NovelGenerator client:load />
   </main>
 </Layout>
-
-<style>
-pre {
-  word-break: break-all;
-  white-space: pre-wrap;
-}
-</style>
-
-<script>
-  const button = document.querySelector('button')
-
-  // const inputString = input!.text
-  let story = ''
-
-  console.log(button)
-  button!.addEventListener('click', async () => {
-    const input = document.getElementById('input') as HTMLInputElement
-    const resultDiv = document.getElementById('result') as HTMLParagraphElement
-    const inputValue = input.value
-    console.log(inputValue)
-
-    resultDiv.innerHTML += inputValue
-
-    const response = await fetch(`/api/generate?input=${story + inputValue}`)
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const data = response.body
-    if (!data) {
-      throw new Error('No data')
-    }
-    let thisParagaph = inputValue
-    const reader = data.getReader()
-    const decoder = new TextDecoder('utf-8')
-    let done = false
-
-    while (!done) {
-      const { value, done: readerDone } = await reader.read()
-      if (value) {
-        const text = decoder.decode(value)
-        resultDiv.innerHTML += text
-        thisParagaph += text
-      }
-      done = readerDone
-    }
-
-    story = resultDiv.innerHTML
-    console.log(story)
-
-    const imgRsponse = await fetch(`/api/image?input=${thisParagaph}`)
-    const imgSrc = await imgRsponse.text()
-
-    const img = document.createElement('img')
-    img.src = imgSrc
-    img.style.width = '200px'
-    document.body.appendChild(img)
-
-  })
-</script>

@@ -11,7 +11,7 @@ export const get: APIRoute = async (context) => {
   const text = params.get('input') || ''
 
   const completion = await openai.createImage({
-    prompt: '水彩风格。' + text,
+    prompt: 'Cyberpunk style.' + text,
     n: 1,
     size: '256x256',
     // stream: true,

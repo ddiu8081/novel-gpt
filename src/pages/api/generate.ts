@@ -32,12 +32,12 @@ export const get: APIRoute = async (context) => {
       model: 'text-davinci-003',
       prompt: generatePrompt(text),
       temperature: 0.6,
-      max_tokens: 50,
+      max_tokens: 300,
       stream: true,
     }),
   })
 
-  return completion
+  // return completion
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -74,7 +74,7 @@ export const get: APIRoute = async (context) => {
 }
 
 const generatePrompt = (text: string) => {
-  return `续写一篇小说。
-  
+  return `Continuing a novel, in Chinese Simplified, 1 paragraph only:
+
   ${ text }`
 }
