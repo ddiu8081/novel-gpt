@@ -1,18 +1,13 @@
 import type { APIRoute } from 'astro'
-import { Configuration, OpenAIApi } from 'openai'
 import {createParser, ParsedEvent, ReconnectInterval} from 'eventsource-parser'
 
 const apiKey = import.meta.env.OPENAI_API_KEY
 
-const configuration = new Configuration({
-  apiKey,
-})
-
-const encoder = new TextEncoder()
 
 export const get: APIRoute = async (context) => {
   const params = context.url.searchParams
   const text = params.get('input')
+  const encoder = new TextEncoder()
   const decoder = new TextDecoder()
 
   if (!text) {
@@ -41,6 +36,8 @@ export const get: APIRoute = async (context) => {
       stream: true,
     }),
   })
+
+  return completion
 
   const stream = new ReadableStream({
     async start(controller) {
