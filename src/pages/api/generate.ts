@@ -37,7 +37,7 @@ export const get: APIRoute = async (context) => {
       model: 'text-davinci-003',
       prompt: generatePrompt(text),
       temperature: 0.6,
-      max_tokens: 300,
+      max_tokens: 10,
       stream: true,
     }),
   })
