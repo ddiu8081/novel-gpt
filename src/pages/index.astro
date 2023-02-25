@@ -40,7 +40,7 @@ pre {
 
     resultDiv.innerHTML += inputValue
 
-    const response = await fetch(`http://localhost:3000/api/generate?input=${story + inputValue}`)
+    const response = await fetch(`/api/generate?input=${story + inputValue}`)
     if (!response.ok) {
       throw new Error(response.statusText)
     }
@@ -66,7 +66,7 @@ pre {
     story = resultDiv.innerHTML
     console.log(story)
 
-    const imgRsponse = await fetch(`http://localhost:3000/api/image?input=${thisParagaph}`)
+    const imgRsponse = await fetch(`/api/image?input=${thisParagaph}`)
     const imgSrc = await imgRsponse.text()
 
     const img = document.createElement('img')
