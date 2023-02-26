@@ -1,4 +1,4 @@
-import { Accessor, Show } from 'solid-js'
+import { Accessor, For, Show } from 'solid-js'
 
 interface StreamParagraph {
   content: Accessor<string>
@@ -16,16 +16,23 @@ interface Props {
 }
 
 export default ({ paragraph, solidParagraph }: Props) => {
+  const paragraphArr = () => {
+    if (paragraph) {
+      return paragraph.content().split('\n')
+    } else if (solidParagraph) {
+      return solidParagraph.content.split('\n')
+    }
+  }
   return (
     <>
-      <p py-3 text-slate leading-relaxed break-words>
-        { paragraph ? paragraph.content() : solidParagraph?.content }
-      </p>
+      <For each={ paragraphArr() }>
+        { (line) => <p class="py-3 text-slate leading-relaxed break-words">{ line }</p> }
+      </For>
       <Show when={ paragraph && paragraph.image() }>
-        <img src={ paragraph?.image() } h-40 mx-auto my-4 />
+        <img src={ paragraph?.image() } h="240px" mx-auto my-4 />
       </Show>
       <Show when={ solidParagraph && solidParagraph.image }>
-        <img src={ solidParagraph?.image } h-40 mx-auto my-4 />
+        <img src={ solidParagraph?.image } h="240px" mx-auto my-4 />
       </Show>
     </>
   )

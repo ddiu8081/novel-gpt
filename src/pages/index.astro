@@ -1,12 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
 import NovelGenerator from '../components/NovelGenerator'
 ---
 
-<Layout title="AI">
+<Layout title="Novel-GPT · AI novel completion tool">
   <main>
     <Header />
     <NovelGenerator client:load />
+    <Footer />
   </main>
 </Layout>

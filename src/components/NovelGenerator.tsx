@@ -1,5 +1,7 @@
-import { createSignal, For } from 'solid-js'
+import { createSignal, For, Show } from 'solid-js'
 import NovelParagraph from './NovelParagraph'
+import Guide from './Guide'
+import IconClear from './icons/Clear'
 
 interface Paragraph {
   content: string
@@ -11,13 +13,24 @@ export default () => {
   const [prevParagraphList, setPrevParagraphList] = createSignal<Paragraph[]>([])
   const [currentParagraph, setCurrentParagraph] = createSignal('')
   const [currentImage, setCurrentImage] = createSignal('')
+  const [loading, setLoading] = createSignal(false)
   const allStory = () => prevParagraphList().map((paragraph) => paragraph.content).join('\n')
 
   const handleButtonClick = async () => {
     const inputValue = inputRef.value
+    if (!inputValue) {
+      return
+    }
+    setLoading(true)
+    inputRef.value = ''
     setCurrentParagraph(inputValue)
 
-    const response = await fetch(`/api/generate?input=${allStory() + inputValue}`)
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      body: JSON.stringify({
+        input: allStory() + inputValue,
+      }),
+    })
     if (!response.ok) {
       throw new Error(response.statusText)
     }
@@ -32,12 +45,11 @@ export default () => {
     while (!done) {
       const { value, done: readerDone } = await reader.read()
       if (value) {
-        const text = decoder.decode(value)
-        if (text === '\n' && currentParagraph() !== '') {
-          done = true
-        } else {
-          setCurrentParagraph(currentParagraph() + text)
+        let text = decoder.decode(value)
+        if (text === '\n' && currentParagraph().endsWith('\n')) {
+          continue
         }
+        setCurrentParagraph(currentParagraph() + text)
       }
       done = readerDone
     }
@@ -49,40 +61,77 @@ export default () => {
     }])
     setCurrentParagraph('')
     setCurrentImage('')
-    inputRef.value = ''
   }
 
   const generateImage = async (prompts: string) => {
-    const imgRsponse = await fetch(`/api/image?input=${prompts}`)
+    const imgRsponse = await fetch('/api/image', {
+      method: 'POST',
+      body: JSON.stringify({
+        input: prompts,
+      }),
+    })
     const imgSrc = await imgRsponse.text()
+    setLoading(false)
     return imgSrc
   }
 
+  const clear = () => {
+    inputRef.value = ''
+    setPrevParagraphList([])
+    setCurrentParagraph('')
+    setCurrentImage('')
+  }
+
   return (
-    <>
+    <div my-6>
+      { !allStory() && !currentParagraph() && <Guide /> }
       <For each={prevParagraphList()}>
         { (paragraph) => (
           <NovelParagraph solidParagraph={paragraph} />
         )}
       </For>
       <NovelParagraph paragraph={{ content: currentParagraph, image: currentImage }} />
-      <div class="flex items-center gap-2">
-        <input
-          ref={inputRef!}
-          type="text" id="input"
-          w-full my-4 px-3 h-12
-          text-xl text-slate
-          border="~ white/20" bg="white/2" ring-0
-          focus="ring-0 outline-none"
-        />
-        <button
-          onClick={handleButtonClick}
-          h-12 px-4 py-2 bg="white op-2 hover"
-          border="~ white/20" text-slate
-        >
-          Submit
-        </button>
-      </div>
-    </>
+      <Show
+        when={!loading()}
+        fallback={() => (
+          <div class="h-12 my-4 flex items-center justify-center bg-slate bg-op-15 text-slate rounded-sm">
+            AI is thinking...
+          </div>
+        )}
+      >
+        <div class="my-4 flex items-center gap-2">
+          <input
+            ref={inputRef!}
+            type="text" id="input"
+            placeholder="Enter a complete sentence..."
+            disabled={loading()}
+            onKeyDown={(e) => { e.key === 'Enter' && handleButtonClick() }}
+            w-full px-4 h-12
+            text-slate rounded-sm
+            bg-slate bg-op-15 focus:bg-op-20
+            focus:ring-0 focus:outline-none
+            placeholder:text-slate-400 placeholder:op-30
+          />
+          <button
+            onClick={handleButtonClick}
+            disabled={loading()}
+            h-12 px-4 py-2
+            bg-slate bg-op-15 hover:bg-op-20
+            text-slate rounded-sm
+          >
+            Continue
+          </button>
+          <button
+            onClick={clear}
+            disabled={loading()}
+            h-12 px-4 py-2
+            bg-slate bg-op-15 hover:bg-op-20
+            text-slate rounded-sm
+          >
+            <IconClear />
+          </button>
+        </div>
+      </Show>
+    </div>
   )
 }

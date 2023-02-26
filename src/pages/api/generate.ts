@@ -4,23 +4,15 @@ import {createParser, ParsedEvent, ReconnectInterval} from 'eventsource-parser'
 const apiKey = import.meta.env.OPENAI_API_KEY
 
 
-export const get: APIRoute = async (context) => {
-  const params = context.url.searchParams
-  const text = params.get('input')
+export const post: APIRoute = async (context) => {
+  const body = await context.request.json()
+  const text = body.input
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
 
   if (!text) {
     return new Response('No input text')
   }
-
-  // const completion = await openai.createCompletion({
-  //   model: 'text-davinci-003',
-  //   prompt: generatePrompt(text),
-  //   temperature: 0.6,
-  //   max_tokens: 300,
-  //   stream: true,
-  // })
 
   const completion = await fetch('https://api.openai.com/v1/completions', {
     headers: {
@@ -32,21 +24,15 @@ export const get: APIRoute = async (context) => {
       model: 'text-davinci-003',
       prompt: generatePrompt(text),
       temperature: 0.6,
-      max_tokens: 300,
+      max_tokens: 1200,
       stream: true,
     }),
   })
 
-  // return completion
-
   const stream = new ReadableStream({
     async start(controller) {
-
       const streamParser = (event: ParsedEvent | ReconnectInterval) => {
         if (event.type === 'event') {
-          // console.log('Received event!')
-          // console.log('id: %s', event.id || '<none>')
-          // console.log('data: %s', event.data)
           const data = event.data
           if (data === '[DONE]') {
             controller.close()
@@ -74,7 +60,5 @@ export const get: APIRoute = async (context) => {
 }
 
 const generatePrompt = (text: string) => {
-  return `Continuing a novel, 1 paragraph only:
-
-  ${ text }`
+  return `Continue the following paragraph of the novel in no more than 150 words.\n${ text }`
 }
