@@ -1,20 +1,25 @@
 import type { APIRoute } from 'astro'
-import { Configuration, OpenAIApi } from 'openai'
 
-const configuration = new Configuration({
-  apiKey: import.meta.env.OPENAI_API_KEY,
-})
-const openai = new OpenAIApi(configuration)
+const apiKey = import.meta.env.OPENAI_API_KEY
 
 export const post: APIRoute = async (context) => {
   const body = await context.request.json()
   const text = body.input || ''
 
-  const completion = await openai.createImage({
-    prompt: 'Cyberpunk style.' + text,
-    n: 1,
-    size: '256x256',
+  const response = await fetch('https://api.openai.com/v1/images/generations', {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      prompt: 'Cyberpunk style.' + text,
+      n: 1,
+      size: '256x256',
+    }),
   })
-  const response = completion.data.data as any[]
-  return new Response(response.length ? response[0].url : '')
+  const completion = await response.json()
+  const data = completion.data as any[]
+  const imgUrl = data.length ? data[0].url : ''
+  return new Response(JSON.stringify({ imgUrl }))
 }

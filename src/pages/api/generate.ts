@@ -3,7 +3,6 @@ import {createParser, ParsedEvent, ReconnectInterval} from 'eventsource-parser'
 
 const apiKey = import.meta.env.OPENAI_API_KEY
 
-
 export const post: APIRoute = async (context) => {
   const body = await context.request.json()
   const text = body.input

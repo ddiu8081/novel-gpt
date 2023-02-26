@@ -22,6 +22,7 @@ export default () => {
       return
     }
     setLoading(true)
+    if (window?.umami) umami.trackEvent('para_generate')
     inputRef.value = ''
     setCurrentParagraph(inputValue)
 
@@ -64,13 +65,14 @@ export default () => {
   }
 
   const generateImage = async (prompts: string) => {
-    const imgRsponse = await fetch('/api/image', {
+    const imgResponse = await fetch('/api/image', {
       method: 'POST',
       body: JSON.stringify({
         input: prompts,
       }),
     })
-    const imgSrc = await imgRsponse.text()
+    const result = await imgResponse.json()
+    const imgSrc = result.imgUrl
     setLoading(false)
     return imgSrc
   }
