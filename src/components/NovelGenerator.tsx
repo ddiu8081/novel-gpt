@@ -54,14 +54,17 @@ export default () => {
       }
       done = readerDone
     }
-    const imgSrc = await generateImage(currentParagraph())
-    setCurrentImage(imgSrc)
+    if (currentParagraph().length > 100) {
+      const imgSrc = await generateImage(currentParagraph())
+      setCurrentImage(imgSrc)
+    }
     setPrevParagraphList([...prevParagraphList(), {
       content: currentParagraph(),
       image: currentImage(),
     }])
     setCurrentParagraph('')
     setCurrentImage('')
+    setLoading(false)
   }
 
   const generateImage = async (prompts: string) => {
@@ -73,7 +76,6 @@ export default () => {
     })
     const result = await imgResponse.json()
     const imgSrc = result.imgUrl
-    setLoading(false)
     return imgSrc
   }
 

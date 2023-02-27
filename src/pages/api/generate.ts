@@ -59,5 +59,5 @@ export const post: APIRoute = async (context) => {
 }
 
 const generatePrompt = (text: string) => {
-  return `Continue the following paragraph of the novel in no more than 150 words.\n${ text }`
+  return `Write 1 paragraph of continuation of the following story, answer in about 150 words.\n\n${ text }`
 }
